@@ -2,6 +2,7 @@ package org.maciooo.domain.numberreceiver;
 
 import org.junit.jupiter.api.Test;
 import org.maciooo.domain.AdjustableClock;
+import org.maciooo.domain.drawdate.DrawDateFacade;
 import org.maciooo.domain.numberreceiver.dto.InputNumberResultDto;
 import org.maciooo.domain.numberreceiver.dto.TicketDto;
 
@@ -17,7 +18,7 @@ class NumberReceiverFacadeTest {
     NumberReceiverFacade numberReceiverFacade = new NumberReceiverFacade(
             new NumberValidator(),
             new InMemoryNumberReceiverRepositoryTestImpl(),
-            clock
+            new DrawDateFacade(clock)
     );
     @Test
     public void should_return_success_when_user_gave_6_numbers() {
@@ -55,14 +56,13 @@ class NumberReceiverFacadeTest {
         //then
         assertThat(result.message()).isEqualTo("failed");
     }
-
     @Test
     public void should_save_to_database_when_user_gave_6_numbers() {
         //given
         Set<Integer> nubersGivenByUser = Set.of(1,2,3,4,5,6);
         InputNumberResultDto result = numberReceiverFacade.inputNumbers(nubersGivenByUser);
         //when
-        LocalDateTime drawDate = LocalDateTime.of(2024, 2, 18, 21, 25, 0);
+        LocalDateTime drawDate = LocalDateTime.of(2024, 2, 24, 12, 0, 0);
         List<TicketDto> ticketDtos = numberReceiverFacade.userNumbers(drawDate);
         //then
         assertThat(ticketDtos).contains(
@@ -74,5 +74,6 @@ class NumberReceiverFacadeTest {
 
         );
     }
+
 
 }

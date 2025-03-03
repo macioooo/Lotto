@@ -1,10 +1,9 @@
 package org.maciooo.domain.numberreceiver;
 
 import lombok.AllArgsConstructor;
+import org.maciooo.domain.drawdate.DrawDateFacade;
 import org.maciooo.domain.numberreceiver.dto.InputNumberResultDto;
 import org.maciooo.domain.numberreceiver.dto.TicketDto;
-
-import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
@@ -14,12 +13,12 @@ import java.util.UUID;
 public class NumberReceiverFacade {
     private final NumberValidator numberValidator;
     private final NumberReceiverRepository repository;
-    private final Clock clock;
+    private final DrawDateFacade drawDateFacade;
 
     public InputNumberResultDto inputNumbers(Set<Integer> numbersGivenByUser) {
         if (numberValidator.areAllNumbersInRange(numbersGivenByUser)) {
             String ticketId = UUID.randomUUID().toString();
-            LocalDateTime drawDate = LocalDateTime.now(clock);
+            LocalDateTime drawDate = drawDateFacade.getNextDrawDate();
             Ticket savedTicket = repository.save(new Ticket(ticketId, drawDate, numbersGivenByUser));
             return InputNumberResultDto
                     .builder()
