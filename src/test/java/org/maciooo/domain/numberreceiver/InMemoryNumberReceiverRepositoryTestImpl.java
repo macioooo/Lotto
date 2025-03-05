@@ -4,9 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
- public class InMemoryNumberReceiverRepositoryTestImpl implements NumberReceiverRepository {
+class InMemoryNumberReceiverRepositoryTestImpl implements NumberReceiverRepository {
 
     Map<String, Ticket> inMemoryDataBase = new ConcurrentHashMap<>();
     @Override
@@ -19,7 +18,12 @@ import java.util.stream.Collectors;
     public List<Ticket> findAllTicketsByDrawDate(LocalDateTime date) {
         return inMemoryDataBase.values()
                 .stream()
-                .filter(ticket -> ticket.drawDate().equals(date))
+                .filter(ticket -> ticket.drawDate().isEqual(date))
                 .toList();
     }
-}
+
+     @Override
+     public Ticket findByTicketId(String ticketId) {
+         return inMemoryDataBase.get(ticketId);
+     }
+ }

@@ -7,4 +7,5 @@ interface NumberReceiverRepository {
     Ticket save(Ticket ticket);
 
     List<Ticket> findAllTicketsByDrawDate(LocalDateTime date);
+    Ticket findByTicketId(String ticketId);
 }
