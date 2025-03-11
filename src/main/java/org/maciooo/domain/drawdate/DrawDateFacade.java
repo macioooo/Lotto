@@ -14,4 +14,5 @@ public class DrawDateFacade {
     public LocalDateTime getNextDrawDate() {
         return drawDateGenerator.checkNextDrawDate();
     }
+    public LocalDateTime calculateDrawDate(LocalDateTime date) {return drawDateGenerator.calculateNextDrawDateByGivenDate(date);}
 }

@@ -11,22 +11,27 @@ import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 
 class NumberReceiverFacadeTest {
     Clock clock = Clock.system(TimeZone.getDefault().toZoneId());
+    DrawDateFacade drawDateFacade = mock(DrawDateFacade.class);
     private final NumberReceiverRepository numberReceiverRepository = new InMemoryNumberReceiverRepositoryTestImpl();
 
     @Test
     public void should_return_success_when_user_gave_6_numbers() {
         //given
+        AdjustableClock adjustableClock = new AdjustableClock(LocalDateTime.of(2024, 2, 16, 21, 25, 0).atZone(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault());
         HashGenerable hashGenerator = new HashGeneratorTestImpl();
-        NumberReceiverFacade numberReceiverFacade = new NumberReceiverConfiguration().createFacadeForTest(hashGenerator, clock, numberReceiverRepository);
-        Set<Integer> numbersGivenByUser = Set.of(1, 2, 3, 4, 5, 6);
-        LocalDateTime drawDate = new DrawDateFacade(clock).getNextDrawDate();
+        NumberReceiverFacade numberReceiverFacade = new NumberReceiverConfiguration().createFacadeForTest(hashGenerator, adjustableClock, numberReceiverRepository);
+        Set<Integer> numbersGivenByUser = Set.of(1, 2, 3, 4, 5, 6);;
+        when(drawDateFacade.getNextDrawDate()).thenReturn(LocalDateTime.of(2024,2, 17, 12, 0, 0));
         TicketDto expectedTicket = TicketDto.builder()
                 .ticketId(hashGenerator.getHash())
                 .numbersFromUser(numbersGivenByUser)
-                .drawDate(drawDate)
+                .drawDate(drawDateFacade.getNextDrawDate())
                 .build();
         //when
         InputNumberResultDto result = numberReceiverFacade.inputNumbers(numbersGivenByUser);
@@ -97,13 +102,12 @@ class NumberReceiverFacadeTest {
         Set<Integer> nubersGivenByUser = Set.of(1, 2, 3, 4, 5, 6);
         InputNumberResultDto result = numberReceiverFacade.inputNumbers(nubersGivenByUser);
         //when
-        LocalDateTime drawDate = new DrawDateFacade(adjustableClock).getNextDrawDate();
         List<TicketDto> ticketDtos = numberReceiverFacade.getAllTicketsForNextDrawDate();
         //then
         assertThat(ticketDtos).contains(
                 TicketDto.builder()
                         .numbersFromUser(result.ticketDto().numbersFromUser())
-                        .drawDate(drawDate)
+                        .drawDate(result.ticketDto().drawDate())
                         .ticketId(result.ticketDto().ticketId())
                         .build()
 
@@ -154,12 +158,42 @@ class NumberReceiverFacadeTest {
         assertThat(allTickets).isEmpty();
     }
     @Test
-    public void should_return_draw_date_exception_when_trying_to_see_future_draw_dates() {
+    public void should_return_empty_list_when_trying_to_see_future_draw_dates() {
         //next draw date: 1.03.2025 12:00
+        //given
         AdjustableClock fixedDate = new AdjustableClock(LocalDateTime.of(2025, 2, 28, 15, 25, 0).atZone(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault());
         HashGenerable hashGenerator = new HashGeneratorTestImpl();
         NumberReceiverFacade numberReceiverFacade = new NumberReceiverConfiguration().createFacadeForTest(hashGenerator, fixedDate, numberReceiverRepository);
-        assertThrows(DrawDateException.class, () ->  numberReceiverFacade.getAllTicketsByDrawDate(LocalDateTime.of(2025,3, 2, 13, 38,0)), "You can't check the tickets for future draws.");
+        //then
+        assertThat(numberReceiverFacade.getAllTicketsForNextDrawDate()).isEmpty();
+    }
+    @Test
+    public void should_return_previous_week_draw_date_tickets() {
+        //given
+        //thursday 15:25
+        AdjustableClock fixedDate = new AdjustableClock(LocalDateTime.of(2025, 2, 27, 15, 25, 0).atZone(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault());
+        HashGenerable hashGenerable = new HashGenerator();
+        NumberReceiverFacade numberReceiverFacade = new NumberReceiverConfiguration().createFacadeForTest(hashGenerable, fixedDate, numberReceiverRepository);
+        InputNumberResultDto firstTicket = numberReceiverFacade.inputNumbers(Set.of(10, 15, 12, 14, 16, 18));
+        fixedDate.plusDays(1);
+        //friday 15:25
+        InputNumberResultDto secondTicket = numberReceiverFacade.inputNumbers(Set.of(9, 55, 21, 34, 16, 13));
+        fixedDate.plusDays(1);
+
+        //saturday 15:25
+        InputNumberResultDto thirdTicket = numberReceiverFacade.inputNumbers(Set.of(88,77,6,55,44,33));
+        fixedDate.plusDays(1);
+
+        //sunday 15:25
+
+        InputNumberResultDto fourthTicket = numberReceiverFacade.inputNumbers(Set.of(11,27,33,44,54,63));
+        TicketDto expectedTicketOne = firstTicket.ticketDto();
+        TicketDto expectedTicketTwo = secondTicket.ticketDto();
+
+        //when
+        List<TicketDto> allExpectedTickets = numberReceiverFacade.getAllTicketsByDrawDate(expectedTicketOne.drawDate());
+        //then
+        assertThat(allExpectedTickets).containsOnly(expectedTicketOne, expectedTicketTwo);
     }
 }
 
