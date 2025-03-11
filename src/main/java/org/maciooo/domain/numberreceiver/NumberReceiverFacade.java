@@ -5,6 +5,7 @@
     import org.maciooo.domain.numberreceiver.dto.InputNumberResultDto;
     import org.maciooo.domain.numberreceiver.dto.TicketDto;
     import java.time.LocalDateTime;
+    import java.util.Collections;
     import java.util.List;
     import java.util.Set;
 
@@ -51,7 +52,7 @@
 
         public List<TicketDto> getAllTicketsByDrawDate(LocalDateTime date) {
             if (date.isAfter(drawDateFacade.getNextDrawDate())) {
-                throw new DrawDateException("You can't check the tickets for future draws.");
+                return Collections.EMPTY_LIST;
             }
             List<Ticket> allTicketsByDrawDate = repository.findAllTicketsByDrawDate(date);
             return allTicketsByDrawDate.stream()

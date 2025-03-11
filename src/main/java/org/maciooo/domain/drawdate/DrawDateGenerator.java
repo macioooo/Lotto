@@ -17,11 +17,14 @@ class DrawDateGenerator {
     }
     LocalDateTime checkNextDrawDate() {
         LocalDateTime todayDateAndTime = LocalDateTime.now(clock);
-        if (isSaturdayBeforeNoon(todayDateAndTime)) {
-            return LocalDateTime.of(todayDateAndTime.toLocalDate(), DRAW_DATE_TIME);
+        return calculateNextDrawDateByGivenDate(todayDateAndTime);
+    }
+    LocalDateTime calculateNextDrawDateByGivenDate(LocalDateTime date) {
+        if (isSaturdayBeforeNoon(date)) {
+            return LocalDateTime.of(date.toLocalDate(), DRAW_DATE_TIME);
         }
-        LocalDateTime nextDrawDate = todayDateAndTime.with(NEXT_DRAW_DAY);
-        return LocalDateTime.of(nextDrawDate.toLocalDate(), DRAW_DATE_TIME);
+        LocalDateTime drawDate = date.with(NEXT_DRAW_DAY);
+        return LocalDateTime.of(drawDate.toLocalDate(), DRAW_DATE_TIME);
     }
     private boolean isSaturdayBeforeNoon(LocalDateTime todayDateAndTime) {
     return todayDateAndTime.getDayOfWeek().equals(DayOfWeek.SATURDAY) && todayDateAndTime.toLocalTime().isBefore(DRAW_DATE_TIME);
