@@ -17,14 +17,13 @@ import static org.mockito.Mockito.when;
 
 class NumberGeneratorFacadeTest {
     DrawDateFacade drawDateFacade = mock(DrawDateFacade.class);
-    NumberGeneratorValidator numberGeneratorValidator = new NumberGeneratorValidator();
     NumberGeneratorRepository numberGeneratorRepository = new InMemoryNumberGeneratorRepositoryTestImpl();
     Clock clock = Clock.system(TimeZone.getDefault().toZoneId());
     @Test
     public void should_generate_6_numbers() {
         //given
         NumberGenerable numberGenerator = new NumberGenerator();
-        NumberGeneratorFacade numberGeneratorFacade = new NumberGeneratorConfiguration().createFacadeForTests(numberGenerator, clock, numberGeneratorValidator, numberGeneratorRepository);
+        NumberGeneratorFacade numberGeneratorFacade = new NumberGeneratorConfiguration().createFacadeForTests(numberGenerator, clock, numberGeneratorRepository);
         //when
         WinningNumbersDto winningNumbers = numberGeneratorFacade.generateWinningNumbers();
         Set<Integer> result =  winningNumbers.winningNumbers();
@@ -36,7 +35,7 @@ class NumberGeneratorFacadeTest {
     public void should_throw_winning_numbers_out_of_range_exception_when_numbers_are_lower_than_1() {
         //given
         NumberGenerable numberGenerator = new NumberGeneratorTestImpl(Set.of(1,2,3,4,5,0));
-        NumberGeneratorFacade numberGeneratorFacade = new NumberGeneratorConfiguration().createFacadeForTests(numberGenerator, clock, numberGeneratorValidator, numberGeneratorRepository);
+        NumberGeneratorFacade numberGeneratorFacade = new NumberGeneratorConfiguration().createFacadeForTests(numberGenerator, clock, numberGeneratorRepository);
         //then
         assertThrows(WinningNumbersOutOfRange.class, () -> numberGeneratorFacade.generateWinningNumbers(), "Numbers are out of range 1-99");
     }
@@ -44,7 +43,7 @@ class NumberGeneratorFacadeTest {
     public void should_throw_winning_numbers_out_of_range_exception_when_numbers_are_bigger_than_99() {
         //given
         NumberGenerable numberGenerator = new NumberGeneratorTestImpl(Set.of(1,2,3,4,5,100));
-        NumberGeneratorFacade numberGeneratorFacade = new NumberGeneratorConfiguration().createFacadeForTests(numberGenerator, clock, numberGeneratorValidator, numberGeneratorRepository);
+        NumberGeneratorFacade numberGeneratorFacade = new NumberGeneratorConfiguration().createFacadeForTests(numberGenerator, clock, numberGeneratorRepository);
         //then
         assertThrows(WinningNumbersOutOfRange.class, () -> numberGeneratorFacade.generateWinningNumbers(), "Numbers are out of range 1-99");
     }
@@ -53,7 +52,7 @@ class NumberGeneratorFacadeTest {
     public void should_return_current_winning_numbers() {
         //given
         NumberGenerable numberGenerator = new NumberGenerator();
-        NumberGeneratorFacade numberGeneratorFacade = new NumberGeneratorConfiguration().createFacadeForTests(numberGenerator, clock, numberGeneratorValidator, numberGeneratorRepository);
+        NumberGeneratorFacade numberGeneratorFacade = new NumberGeneratorConfiguration().createFacadeForTests(numberGenerator, clock, numberGeneratorRepository);
         //when
         when(drawDateFacade.getNextDrawDate()).thenReturn(LocalDateTime.now(clock));
         WinningNumbersDto winningNumbersDto = numberGeneratorFacade.generateWinningNumbers();
@@ -65,7 +64,7 @@ class NumberGeneratorFacadeTest {
     public void should_return_previous_week_winning_numbers() {
         AdjustableClock adjustableClock = new AdjustableClock(LocalDateTime.of(2025, 2, 14, 21, 25, 0).atZone(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault());
         NumberGenerable numberGenerator = new NumberGenerator();
-        NumberGeneratorFacade numberGeneratorFacade = new NumberGeneratorConfiguration().createFacadeForTests(numberGenerator, adjustableClock, numberGeneratorValidator, numberGeneratorRepository);
+        NumberGeneratorFacade numberGeneratorFacade = new NumberGeneratorConfiguration().createFacadeForTests(numberGenerator, adjustableClock, numberGeneratorRepository);
         WinningNumbersDto winningNumbersOne = numberGeneratorFacade.generateWinningNumbers();
         adjustableClock.plusDays(1);
         WinningNumbersDto winningNumbersTwo = numberGeneratorFacade.generateWinningNumbers();
@@ -80,7 +79,7 @@ class NumberGeneratorFacadeTest {
         //friday
         AdjustableClock adjustableClock = new AdjustableClock(LocalDateTime.of(2025, 2, 14, 21, 25, 0).atZone(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault());
         NumberGenerable numberGenerator = new NumberGenerator();
-        NumberGeneratorFacade numberGeneratorFacade = new NumberGeneratorConfiguration().createFacadeForTests(numberGenerator, adjustableClock, numberGeneratorValidator, numberGeneratorRepository);
+        NumberGeneratorFacade numberGeneratorFacade = new NumberGeneratorConfiguration().createFacadeForTests(numberGenerator, adjustableClock, numberGeneratorRepository);
         WinningNumbersDto winningNumbersOne = numberGeneratorFacade.generateWinningNumbers();
         adjustableClock.plusDays(1);
         WinningNumbersDto winningNumbersTwo = numberGeneratorFacade.generateWinningNumbers();
@@ -96,7 +95,7 @@ class NumberGeneratorFacadeTest {
         //given
         AdjustableClock adjustableClock = new AdjustableClock(LocalDateTime.of(2025, 2, 14, 21, 25, 0).atZone(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault());
         NumberGenerable numberGenerator = new NumberGenerator();
-        NumberGeneratorFacade numberGeneratorFacade = new NumberGeneratorConfiguration().createFacadeForTests(numberGenerator, adjustableClock, numberGeneratorValidator, numberGeneratorRepository);
+        NumberGeneratorFacade numberGeneratorFacade = new NumberGeneratorConfiguration().createFacadeForTests(numberGenerator, adjustableClock, numberGeneratorRepository);
         WinningNumbersDto generatedNumbersOne = numberGeneratorFacade.generateWinningNumbers();
         //when//then
         assertThrows(WinningNumbersAlreadyGenerated.class, () -> numberGeneratorFacade.generateWinningNumbers(), "Numbers were already generated for this week!");
@@ -106,7 +105,7 @@ class NumberGeneratorFacadeTest {
     public void should_return_winning_numbers_with_empty_set_when_numbers_werent_generated_for_draw_date() {
         //given
         NumberGenerable numberGenerator = new NumberGenerator();
-        NumberGeneratorFacade numberGeneratorFacade = new NumberGeneratorConfiguration().createFacadeForTests(numberGenerator, clock, numberGeneratorValidator, numberGeneratorRepository);
+        NumberGeneratorFacade numberGeneratorFacade = new NumberGeneratorConfiguration().createFacadeForTests(numberGenerator, clock, numberGeneratorRepository);
         //when
         WinningNumbersDto winningNumbersDto = numberGeneratorFacade.getWinningNumbersByDrawDate(LocalDateTime.now());
         //then
@@ -117,7 +116,7 @@ class NumberGeneratorFacadeTest {
     public void should_return_empty_list_when_no_winning_numbers_were_ever_generated() {
         //given
         NumberGenerable numberGenerator = new NumberGenerator();
-        NumberGeneratorFacade numberGeneratorFacade = new NumberGeneratorConfiguration().createFacadeForTests(numberGenerator, clock, numberGeneratorValidator, numberGeneratorRepository);
+        NumberGeneratorFacade numberGeneratorFacade = new NumberGeneratorConfiguration().createFacadeForTests(numberGenerator, clock, numberGeneratorRepository);
         //when
         List<WinningNumbersDto> listOfWinningNumbers = numberGeneratorFacade.getAllWinningNumbers();
         //then

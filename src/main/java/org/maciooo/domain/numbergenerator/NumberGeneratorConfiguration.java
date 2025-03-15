@@ -5,8 +5,9 @@ import org.maciooo.domain.drawdate.DrawDateFacade;
 import java.time.Clock;
 
 class NumberGeneratorConfiguration {
-    NumberGeneratorFacade createFacadeForTests(NumberGenerable numberGenerator, Clock clock, NumberGeneratorValidator numberGeneratorValidator, NumberGeneratorRepository numberGeneratorRepository) {
+    NumberGeneratorFacade createFacadeForTests(NumberGenerable numberGenerator, Clock clock , NumberGeneratorRepository numberGeneratorRepository) {
         DrawDateFacade drawDateFacade = new DrawDateFacade(clock);
+        NumberGeneratorValidator numberGeneratorValidator = new NumberGeneratorValidator();
         return new NumberGeneratorFacade(numberGenerator, drawDateFacade, numberGeneratorValidator, numberGeneratorRepository);
     }
 
