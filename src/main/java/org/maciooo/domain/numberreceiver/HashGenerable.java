@@ -1,6 +1,6 @@
 package org.maciooo.domain.numberreceiver;
 
-public interface HashGenerable {
+interface HashGenerable {
 
     String getHash();
 }

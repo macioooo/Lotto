@@ -10,7 +10,6 @@ import java.time.*;
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -26,7 +25,7 @@ class NumberReceiverFacadeTest {
         AdjustableClock adjustableClock = new AdjustableClock(LocalDateTime.of(2024, 2, 16, 21, 25, 0).atZone(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault());
         HashGenerable hashGenerator = new HashGeneratorTestImpl();
         NumberReceiverFacade numberReceiverFacade = new NumberReceiverConfiguration().createFacadeForTest(hashGenerator, adjustableClock, numberReceiverRepository);
-        Set<Integer> numbersGivenByUser = Set.of(1, 2, 3, 4, 5, 6);;
+        Set<Integer> numbersGivenByUser = Set.of(1, 2, 3, 4, 5, 6);
         when(drawDateFacade.getNextDrawDate()).thenReturn(LocalDateTime.of(2024,2, 17, 12, 0, 0));
         TicketDto expectedTicket = TicketDto.builder()
                 .ticketId(hashGenerator.getHash())
@@ -36,7 +35,7 @@ class NumberReceiverFacadeTest {
         //when
         InputNumberResultDto result = numberReceiverFacade.inputNumbers(numbersGivenByUser);
         //then
-        InputNumberResultDto expectedResult = new InputNumberResultDto(ValidationMessages.SUCCESS.message, expectedTicket);
+        InputNumberResultDto expectedResult = new InputNumberResultDto(NumberReceiverValidationMessages.SUCCESS.message, expectedTicket);
         assertThat(result).isEqualTo(expectedResult);
     }
 
@@ -47,7 +46,7 @@ class NumberReceiverFacadeTest {
         NumberReceiverFacade numberReceiverFacade = new NumberReceiverConfiguration().createFacadeForTest(hashGenerable, clock, numberReceiverRepository);
         Set<Integer> numbersGivenByUser = Set.of(1, 2, 3, 4, 5);
         //when
-        InputNumberResultDto expectedResult = new InputNumberResultDto(ValidationMessages.LESS_OR_MORE_THAN_6_NUMBERS_GIVEN.message, null);
+        InputNumberResultDto expectedResult = new InputNumberResultDto(NumberReceiverValidationMessages.LESS_OR_MORE_THAN_6_NUMBERS_GIVEN.message, null);
         InputNumberResultDto result = numberReceiverFacade.inputNumbers(numbersGivenByUser);
         //then
         assertThat(result).isEqualTo(expectedResult);
@@ -62,7 +61,7 @@ class NumberReceiverFacadeTest {
         //when
         InputNumberResultDto result = numberReceiverFacade.inputNumbers(numbersGivenByUser);
         //then
-        InputNumberResultDto expectedResult = new InputNumberResultDto(ValidationMessages.LESS_OR_MORE_THAN_6_NUMBERS_GIVEN.message, null);
+        InputNumberResultDto expectedResult = new InputNumberResultDto(NumberReceiverValidationMessages.LESS_OR_MORE_THAN_6_NUMBERS_GIVEN.message, null);
         assertThat(result).isEqualTo(expectedResult);
     }
 
@@ -75,7 +74,7 @@ class NumberReceiverFacadeTest {
         //when
         InputNumberResultDto result = numberReceiverFacade.inputNumbers(numbersGivenByUser);
         //then
-        InputNumberResultDto expectedResult = new InputNumberResultDto(ValidationMessages.NOT_IN_RANGE.message, null);
+        InputNumberResultDto expectedResult = new InputNumberResultDto(NumberReceiverValidationMessages.NOT_IN_RANGE.message, null);
         assertThat(result).isEqualTo(expectedResult);
     }
 
@@ -88,7 +87,7 @@ class NumberReceiverFacadeTest {
         //when
         InputNumberResultDto result = numberReceiverFacade.inputNumbers(numbersGivenByUser);
         //then
-        String expectedMessage = ValidationMessages.LESS_OR_MORE_THAN_6_NUMBERS_GIVEN.message + ", " + ValidationMessages.NOT_IN_RANGE.message;
+        String expectedMessage = NumberReceiverValidationMessages.LESS_OR_MORE_THAN_6_NUMBERS_GIVEN.message + ", " + NumberReceiverValidationMessages.NOT_IN_RANGE.message;
         InputNumberResultDto expectedResult = new InputNumberResultDto(expectedMessage, null);
         assertThat(result).isEqualTo(expectedResult);
     }
