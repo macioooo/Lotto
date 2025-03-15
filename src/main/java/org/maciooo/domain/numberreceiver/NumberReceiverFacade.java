@@ -11,7 +11,7 @@
 
     @AllArgsConstructor
     public class NumberReceiverFacade {
-        private final NumberValidator numberValidator;
+        private final NumberReceiverValidator numberValidator;
         private final NumberReceiverRepository repository;
         private final DrawDateFacade drawDateFacade;
         private final HashGenerable hashGenerator;
@@ -41,7 +41,7 @@
                         .build();
                 return InputNumberResultDto
                         .builder()
-                        .message(ValidationMessages.SUCCESS.message)
+                        .message(NumberReceiverValidationMessages.SUCCESS.message)
                         .ticketDto(ticketDto)
                         .build();
             }
@@ -50,7 +50,7 @@
             return getAllTicketsByDrawDate(drawDateFacade.getNextDrawDate());
         }
 
-        public List<TicketDto> getAllTicketsByDrawDate(LocalDateTime date) {
+        public List getAllTicketsByDrawDate(LocalDateTime date) {
             if (date.isAfter(drawDateFacade.getNextDrawDate())) {
                 return Collections.EMPTY_LIST;
             }
@@ -68,8 +68,6 @@
                     .numbersFromUser(ticket.numbersGivenByUser())
                     .drawDate(ticket.drawDate())
                     .build();
-
-
         }
 
 

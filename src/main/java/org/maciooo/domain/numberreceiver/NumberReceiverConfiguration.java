@@ -7,7 +7,7 @@ import java.time.Clock;
 class NumberReceiverConfiguration {
     NumberReceiverFacade createFacadeForTest(HashGenerable hashGenerator, Clock clock, NumberReceiverRepository repository) {
         DrawDateFacade drawDateFacade = new DrawDateFacade(clock);
-        NumberValidator numberValidator = new NumberValidator();
+        NumberReceiverValidator numberValidator = new NumberReceiverValidator();
         return new NumberReceiverFacade(numberValidator, repository, drawDateFacade, hashGenerator);
     }
 
