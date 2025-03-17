@@ -26,7 +26,7 @@ class ResultCheckerFacadeTest {
     @Test
     void should_return_3_out_of_3_players_and_retrieve_success_message() {
         //given
-        LocalDateTime drawDate = LocalDateTime.of(2025, 3, 17, 12, 50);
+        String drawDate = LocalDateTime.of(2025, 3, 17, 12, 50).toString();
         ResultCheckerFacade resultCheckerFacade = new ResultCheckerConfiguration().createFacadeForTest(numberReceiverFacade, numberGeneratorFacade, playerRepository);
         when(numberGeneratorFacade.generateWinningNumbers()).thenReturn(WinningNumbersDto.builder()
                 .drawDate(drawDate)
@@ -82,7 +82,7 @@ class ResultCheckerFacadeTest {
     @Test
     void should_return_that_both_players_are_winners() {
         //given
-        LocalDateTime drawDate = LocalDateTime.of(2025, 3, 17, 12, 50);
+        String drawDate = LocalDateTime.of(2025, 3, 17, 12, 50).toString();
         ResultCheckerFacade resultCheckerFacade = new ResultCheckerConfiguration().createFacadeForTest(numberReceiverFacade, numberGeneratorFacade, playerRepository);
         when(numberGeneratorFacade.generateWinningNumbers()).thenReturn(WinningNumbersDto.builder()
                 .drawDate(drawDate)
@@ -109,7 +109,7 @@ class ResultCheckerFacadeTest {
     @Test
     void should_return_that_only_second_player_is_winner() {
         //given
-        LocalDateTime drawDate = LocalDateTime.of(2025, 3, 17, 12, 50);
+        String drawDate = LocalDateTime.of(2025, 3, 17, 12, 50).toString();
         ResultCheckerFacade resultCheckerFacade = new ResultCheckerConfiguration().createFacadeForTest(numberReceiverFacade, numberGeneratorFacade, playerRepository);
         when(numberGeneratorFacade.generateWinningNumbers()).thenReturn(WinningNumbersDto.builder()
                 .drawDate(drawDate)
@@ -140,7 +140,7 @@ class ResultCheckerFacadeTest {
     @Test
     void should_return_failed_to_retrieve_winning_numbers_when_winning_numbers_is_empty() {
         //given
-        LocalDateTime drawDate = LocalDateTime.of(2025, 3, 17, 12, 50);
+        String drawDate = LocalDateTime.of(2025, 3, 17, 12, 50).toString();
         ResultCheckerFacade resultCheckerFacade = new ResultCheckerConfiguration().createFacadeForTest(numberReceiverFacade, numberGeneratorFacade, playerRepository);
         when(numberGeneratorFacade.generateWinningNumbers()).thenReturn(WinningNumbersDto.builder()
                 .winningNumbers(Collections.emptySet())
@@ -155,7 +155,7 @@ class ResultCheckerFacadeTest {
     @Test
     void should_return_failed_to_retrieve_winning_numbers_when_winning_numbers_is_null() {
         //given
-        LocalDateTime drawDate = LocalDateTime.of(2025, 3, 17, 12, 50);
+        String drawDate = LocalDateTime.of(2025, 3, 17, 12, 50).toString();
         ResultCheckerFacade resultCheckerFacade = new ResultCheckerConfiguration().createFacadeForTest(numberReceiverFacade, numberGeneratorFacade, playerRepository);
         when(numberGeneratorFacade.generateWinningNumbers()).thenReturn(WinningNumbersDto.builder()
                 .winningNumbers(null)
@@ -170,7 +170,7 @@ class ResultCheckerFacadeTest {
     @Test
     void should_return_player_by_id() {
         //given
-        LocalDateTime drawDate = LocalDateTime.of(2025, 3, 17, 12, 50);
+        String drawDate = LocalDateTime.of(2025, 3, 17, 12, 50).toString();
         ResultCheckerFacade resultCheckerFacade = new ResultCheckerConfiguration().createFacadeForTest(numberReceiverFacade, numberGeneratorFacade, playerRepository);
         when(numberReceiverFacade.getAllTicketsForNextDrawDate()).thenReturn(
                 List.of(TicketDto.builder()
@@ -205,7 +205,7 @@ class ResultCheckerFacadeTest {
     @Test
     void should_return_exception_player_not_found_when_finding_player_by_id() {
         //given
-        LocalDateTime drawDate = LocalDateTime.of(2025, 3, 17, 12, 50);
+        String drawDate = LocalDateTime.of(2025, 3, 17, 12, 50).toString();
         ResultCheckerFacade resultCheckerFacade = new ResultCheckerConfiguration().createFacadeForTest(numberReceiverFacade, numberGeneratorFacade, playerRepository);
         when(numberReceiverFacade.getAllTicketsForNextDrawDate()).thenReturn(
                 List.of(TicketDto.builder()

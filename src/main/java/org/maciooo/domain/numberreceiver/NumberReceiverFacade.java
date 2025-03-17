@@ -2,6 +2,7 @@
 
     import lombok.AllArgsConstructor;
     import org.maciooo.domain.drawdate.DrawDateFacade;
+    import org.maciooo.domain.drawdate.dto.DrawDateDto;
     import org.maciooo.domain.numberreceiver.dto.InputNumberResultDto;
     import org.maciooo.domain.numberreceiver.dto.TicketDto;
     import java.time.LocalDateTime;
@@ -25,11 +26,12 @@
                         .build();
             }
                 String ticketId = hashGenerator.getHash();
-                LocalDateTime drawDate = drawDateFacade.getNextDrawDate();
+                DrawDateDto drawDateDto = drawDateFacade.getNextDrawDate();
+                DrawDate drawDate = NumberReceiverMapper.mapFromDrawDateDto(drawDateDto);
                 Ticket ticket = Ticket
                         .builder()
                         .ticketId(ticketId)
-                        .drawDate(drawDate)
+                        .drawDate(drawDate.date())
                         .numbersGivenByUser(numbersGivenByUser)
                         .build();
                 repository.save(ticket);
@@ -47,16 +49,19 @@
             }
 
         public List<TicketDto> getAllTicketsForNextDrawDate() {
-            return getAllTicketsByDrawDate(drawDateFacade.getNextDrawDate());
+            DrawDate drawDate = NumberReceiverMapper.mapFromDrawDateDto(drawDateFacade.getNextDrawDate());
+            return getAllTicketsByDrawDate(drawDate.date());
         }
 
-        public List getAllTicketsByDrawDate(LocalDateTime date) {
-            if (date.isAfter(drawDateFacade.getNextDrawDate())) {
+        public List<TicketDto> getAllTicketsByDrawDate(String date) {
+            LocalDateTime dateTime = NumberReceiverMapper.mapFromStringToLocalDateTime(date);
+            LocalDateTime nextDrawDate =NumberReceiverMapper.mapFromStringToLocalDateTime(drawDateFacade.getNextDrawDate().date());
+            if (dateTime.isAfter(nextDrawDate)) {
                 return Collections.EMPTY_LIST;
             }
             List<Ticket> allTicketsByDrawDate = repository.findAllTicketsByDrawDate(date);
             return allTicketsByDrawDate.stream()
-                    .map(TicketMapper::mapFromTicket)
+                    .map(NumberReceiverMapper::mapFromTicket)
                     .toList();
         }
 

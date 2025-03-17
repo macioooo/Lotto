@@ -7,26 +7,30 @@ import java.time.LocalTime;
 import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalAdjusters;
 
-class DrawDateGenerator {
+class DrawDateGenerator implements DrawDateGenerable {
     private static final LocalTime DRAW_DATE_TIME = LocalTime.of(12, 0, 0);
     private static final TemporalAdjuster NEXT_DRAW_DAY = TemporalAdjusters.next(DayOfWeek.SATURDAY);
     private final Clock clock;
 
-    public DrawDateGenerator(Clock clock) {
+    DrawDateGenerator(Clock clock) {
+        if (clock == null) {
+            throw new NullClockException("Clock cannot be null");
+        }
         this.clock = clock;
     }
-    LocalDateTime checkNextDrawDate() {
-        LocalDateTime todayDateAndTime = LocalDateTime.now(clock);
-        return calculateNextDrawDateByGivenDate(todayDateAndTime);
-    }
-    LocalDateTime calculateNextDrawDateByGivenDate(LocalDateTime date) {
+
+
+    public DrawDate calculateNextDrawDate() {
+        LocalDateTime date = LocalDateTime.now(clock);
         if (isSaturdayBeforeNoon(date)) {
-            return LocalDateTime.of(date.toLocalDate(), DRAW_DATE_TIME);
+            return DrawDateMapper.mapLocalDateTimeToDrawDate(LocalDateTime.of(date.toLocalDate(), DRAW_DATE_TIME));
         }
         LocalDateTime drawDate = date.with(NEXT_DRAW_DAY);
-        return LocalDateTime.of(drawDate.toLocalDate(), DRAW_DATE_TIME);
+        LocalDateTime result = LocalDateTime.of(drawDate.toLocalDate(), DRAW_DATE_TIME);
+        return DrawDateMapper.mapLocalDateTimeToDrawDate(result);
     }
+
     private boolean isSaturdayBeforeNoon(LocalDateTime todayDateAndTime) {
-    return todayDateAndTime.getDayOfWeek().equals(DayOfWeek.SATURDAY) && todayDateAndTime.toLocalTime().isBefore(DRAW_DATE_TIME);
+        return todayDateAndTime.getDayOfWeek().equals(DayOfWeek.SATURDAY) && todayDateAndTime.toLocalTime().isBefore(DRAW_DATE_TIME);
     }
 }
