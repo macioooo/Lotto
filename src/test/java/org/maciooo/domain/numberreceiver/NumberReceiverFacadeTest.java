@@ -3,6 +3,7 @@ package org.maciooo.domain.numberreceiver;
 import org.junit.jupiter.api.Test;
 import org.maciooo.domain.AdjustableClock;
 import org.maciooo.domain.drawdate.DrawDateFacade;
+import org.maciooo.domain.drawdate.dto.DrawDateDto;
 import org.maciooo.domain.numberreceiver.dto.InputNumberResultDto;
 import org.maciooo.domain.numberreceiver.dto.TicketDto;
 
@@ -26,11 +27,13 @@ class NumberReceiverFacadeTest {
         HashGenerable hashGenerator = new HashGeneratorTestImpl();
         NumberReceiverFacade numberReceiverFacade = new NumberReceiverConfiguration().createFacadeForTest(hashGenerator, adjustableClock, numberReceiverRepository);
         Set<Integer> numbersGivenByUser = Set.of(1, 2, 3, 4, 5, 6);
-        when(drawDateFacade.getNextDrawDate()).thenReturn(LocalDateTime.of(2024,2, 17, 12, 0, 0));
+        when(drawDateFacade.getNextDrawDate()).thenReturn(DrawDateDto.builder()
+                        .date(LocalDateTime.of(2024,2, 17, 12, 0, 0).toString())
+                .build());
         TicketDto expectedTicket = TicketDto.builder()
                 .ticketId(hashGenerator.getHash())
                 .numbersFromUser(numbersGivenByUser)
-                .drawDate(drawDateFacade.getNextDrawDate())
+                .drawDate(drawDateFacade.getNextDrawDate().date())
                 .build();
         //when
         InputNumberResultDto result = numberReceiverFacade.inputNumbers(numbersGivenByUser);

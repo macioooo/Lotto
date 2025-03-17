@@ -1,18 +1,23 @@
 package org.maciooo.domain.drawdate;
 
+import org.maciooo.domain.drawdate.dto.DrawDateDto;
+
 import java.time.Clock;
-import java.time.LocalDateTime;
 
 public class DrawDateFacade {
-    private final DrawDateGenerator drawDateGenerator;
+    private final DrawDateGenerable drawDateGenerator;
 
     public DrawDateFacade(Clock clock) {
         this.drawDateGenerator = new DrawDateGenerator(clock);
     }
 
 
-    public LocalDateTime getNextDrawDate() {
-        return drawDateGenerator.checkNextDrawDate();
+    public DrawDateDto getNextDrawDate() {
+        DrawDate drawDate = drawDateGenerator.calculateNextDrawDate();
+        return DrawDateDto.builder()
+                .date(drawDate.date())
+                .message(drawDate.message())
+                .build();
     }
-    public LocalDateTime calculateDrawDate(LocalDateTime date) {return drawDateGenerator.calculateNextDrawDateByGivenDate(date);}
+
 }

@@ -1,6 +1,5 @@
 package org.maciooo.domain.numberreceiver;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -15,10 +14,10 @@ class InMemoryNumberReceiverRepositoryTestImpl implements NumberReceiverReposito
     }
 
     @Override
-    public List<Ticket> findAllTicketsByDrawDate(LocalDateTime date) {
+    public List<Ticket> findAllTicketsByDrawDate(String date) {
         return inMemoryDataBase.values()
                 .stream()
-                .filter(ticket -> ticket.drawDate().isEqual(date))
+                .filter(ticket -> ticket.drawDate().equals(date))
                 .toList();
     }
 

@@ -3,6 +3,7 @@ package org.maciooo.domain.numbergenerator;
 import org.junit.jupiter.api.Test;
 import org.maciooo.domain.AdjustableClock;
 import org.maciooo.domain.drawdate.DrawDateFacade;
+import org.maciooo.domain.drawdate.dto.DrawDateDto;
 import org.maciooo.domain.numbergenerator.dto.WinningNumbersDto;
 
 import java.time.Clock;
@@ -54,9 +55,11 @@ class NumberGeneratorFacadeTest {
         NumberGenerable numberGenerator = new NumberGenerator();
         NumberGeneratorFacade numberGeneratorFacade = new NumberGeneratorConfiguration().createFacadeForTests(numberGenerator, clock, numberGeneratorRepository);
         //when
-        when(drawDateFacade.getNextDrawDate()).thenReturn(LocalDateTime.now(clock));
+        when(drawDateFacade.getNextDrawDate()).thenReturn(DrawDateDto.builder()
+                .date(LocalDateTime.now(clock).toString())
+                .build());
         WinningNumbersDto winningNumbersDto = numberGeneratorFacade.generateWinningNumbers();
-        LocalDateTime drawDate = winningNumbersDto.drawDate();
+        String drawDate = winningNumbersDto.drawDate();
         //then
         assertEquals(winningNumbersDto, numberGeneratorFacade.getWinningNumbersByDrawDate(drawDate));
     }
@@ -107,7 +110,7 @@ class NumberGeneratorFacadeTest {
         NumberGenerable numberGenerator = new NumberGenerator();
         NumberGeneratorFacade numberGeneratorFacade = new NumberGeneratorConfiguration().createFacadeForTests(numberGenerator, clock, numberGeneratorRepository);
         //when
-        WinningNumbersDto winningNumbersDto = numberGeneratorFacade.getWinningNumbersByDrawDate(LocalDateTime.now());
+        WinningNumbersDto winningNumbersDto = numberGeneratorFacade.getWinningNumbersByDrawDate(LocalDateTime.now(clock).toString());
         //then
         assertEquals(Collections.emptySet(), winningNumbersDto.winningNumbers());
     }

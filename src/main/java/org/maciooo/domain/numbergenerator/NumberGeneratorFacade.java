@@ -3,9 +3,9 @@ package org.maciooo.domain.numbergenerator;
 
 import lombok.AllArgsConstructor;
 import org.maciooo.domain.drawdate.DrawDateFacade;
+import org.maciooo.domain.drawdate.dto.DrawDateDto;
 import org.maciooo.domain.numbergenerator.dto.WinningNumbersDto;
 
-import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -19,15 +19,16 @@ public class NumberGeneratorFacade {
     private final NumberGeneratorRepository numbersRepository;
 
     public WinningNumbersDto generateWinningNumbers() {
-        LocalDateTime drawDate = drawDateFacade.getNextDrawDate();
-        if (!getWinningNumbersByDrawDate(drawDate).winningNumbers().isEmpty()) {
+        DrawDateDto drawDateDto = drawDateFacade.getNextDrawDate();
+        DrawDate drawDate = WinningNumbersMapper.mapFromDrawDateDto(drawDateDto);
+        if (!getWinningNumbersByDrawDate(drawDate.date()).winningNumbers().isEmpty()) {
             throw new WinningNumbersAlreadyGenerated("Numbers were already generated for this week!");
         }
         Set<Integer> generatedNumbers = numberGenerator.generateWinningNumbers();
         numberGeneratorValidator.validateWinningNumbers(generatedNumbers);
         WinningNumbers winningNumbers = WinningNumbers.builder()
                 .generatedWinningNumbers(generatedNumbers)
-                .drawDate(drawDate)
+                .drawDate(drawDate.date())
                 .build();
         numbersRepository.save(winningNumbers);
         return WinningNumbersMapper.mapFromWinningNumbersToDto(winningNumbers);
@@ -40,7 +41,7 @@ public class NumberGeneratorFacade {
                 .toList();
     }
 
-    public WinningNumbersDto getWinningNumbersByDrawDate(LocalDateTime drawDate) {
+    public WinningNumbersDto getWinningNumbersByDrawDate(String drawDate) {
         WinningNumbers winningNumbers = numbersRepository.findWinningNumbersByDrawDate(drawDate);
         return Optional.ofNullable(winningNumbers)
                 .map(WinningNumbersMapper::mapFromWinningNumbersToDto)
