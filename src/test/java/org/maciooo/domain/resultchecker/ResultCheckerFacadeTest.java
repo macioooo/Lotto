@@ -132,8 +132,8 @@ class ResultCheckerFacadeTest {
         PlayerDto playerOne = resultCheckerFacade.findPlayerByTicketId("001");
         PlayerDto playerTwo = resultCheckerFacade.findPlayerByTicketId("002");
         //then
-        assertThat(playerOne.isWinner()).isEqualTo(true);
-        assertThat(playerTwo.isWinner()).isEqualTo(false);
+        assertThat(playerOne.isWinner()).isTrue();
+        assertThat(playerTwo.isWinner()).isFalse();
     }
 
 
