@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Set;
 
 @AllArgsConstructor
-class ResultCheckerFacade {
+public class ResultCheckerFacade {
     private final PlayerRepository playerRepository;
     private final PlayersRetriever playersRetriever;
     private final NumberGeneratorFacade numberGeneratorFacade;
