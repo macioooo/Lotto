@@ -27,7 +27,7 @@ public class ResultAnnouncerFacade {
         }
 
         if (repository.existById(ticketId)) {
-            if (validator.hasCooldown(ticketId)) {
+            if (validator.hasCooldown(ticketId, clock)) {
                 return ResultAnnouncerResponseDto.builder()
                         .message(COOLDOWN_MESSAGE.message)
                         .build();

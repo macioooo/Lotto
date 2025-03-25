@@ -7,10 +7,7 @@ import org.maciooo.domain.resultannouncer.dto.ResultResponseDto;
 import org.maciooo.domain.resultchecker.ResultCheckerFacade;
 import org.maciooo.domain.resultchecker.dto.PlayerDto;
 
-import java.time.Clock;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -50,17 +47,15 @@ class ResultAnnouncerFacadeTest {
                 .drawDate(LocalDateTime.of(2025, 3, 22, 12, 0, 0).toString())
                 .build();
         repository.save(ResultAnnouncerMapper.mapFromDtoToResultResponse(result));
-        //when
-        //first two results should be returned
-        ResultAnnouncerResponseDto first = facade.announceResult("001");
-        ResultAnnouncerResponseDto second = facade.announceResult("001");
+        //when//then
+        //first result should be returned
+        assertThat(facade.announceResult("001")).isEqualTo(new ResultAnnouncerResponseDto(result, YOU_WON_MESSAGE.message));
         ResultAnnouncerResponseDto expected = facade.announceResult("001");
-        ResultAnnouncerResponseDto expectedFirstAndSecond = new ResultAnnouncerResponseDto(result, YOU_WON_MESSAGE.message);
-        //then
-        assertThat(first).isEqualTo(expectedFirstAndSecond);
-        assertThat(second).isEqualTo(expectedFirstAndSecond);
         assertThat(expected).isEqualTo(new ResultAnnouncerResponseDto(null, COOLDOWN_MESSAGE.message));
-     }
+        clock.plusMinutes(6);
+        assertThat(facade.announceResult("001")).isEqualTo(new ResultAnnouncerResponseDto(result, YOU_WON_MESSAGE.message));
+
+    }
 
 
     @Test
