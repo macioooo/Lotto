@@ -1,28 +1,28 @@
 package org.maciooo.domain.numbergenerator;
 
-import java.security.SecureRandom;
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
+import lombok.AllArgsConstructor;
+import org.maciooo.domain.numbergenerator.dto.OneRandomNumberFetcherResponseDto;
 
-class NumberGenerator implements NumberGenerable{
+import java.util.HashSet;
+import java.util.Set;
+@AllArgsConstructor
+class NumberGenerator implements NumberGenerable {
     private static final int MIN_NUM = 1;
     private static final int MAX_NUM = 99;
-    private static final int BOUND = (MAX_NUM - MIN_NUM) + 1;
+    private final OneRandomNumberFetcher fetcher;
 
     @Override
     public Set<Integer> generateWinningNumbers() {
         Set<Integer> winningNumbers = new HashSet<>();
         while (isAmountOfGeneratedNumbersLowerThanSix(winningNumbers)) {
-            winningNumbers.add(generateRandomNumber());
+            OneRandomNumberFetcherResponseDto fetcherResponseDto = fetcher.fetchOneRandomNumber(MIN_NUM, MAX_NUM);
+            winningNumbers.add(fetcherResponseDto.number());
         }
         return winningNumbers;
     }
-    private boolean isAmountOfGeneratedNumbersLowerThanSix (Set<Integer> numbers) {
-        return numbers.size()<6;
+
+    private boolean isAmountOfGeneratedNumbersLowerThanSix(Set<Integer> numbers) {
+        return numbers.size() < 6;
     }
-    private int generateRandomNumber() {
-        Random random = new SecureRandom();
-        return random.nextInt(BOUND)+MIN_NUM;
-    }
+
 }
