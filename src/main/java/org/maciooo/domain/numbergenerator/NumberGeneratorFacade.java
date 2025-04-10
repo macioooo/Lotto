@@ -13,7 +13,7 @@ import java.util.Set;
 
 @AllArgsConstructor
 public class NumberGeneratorFacade {
-    private final NumberGenerable numberGenerator;
+    private final RandomNumberGenerable numberGenerator;
     private final DrawDateFacade drawDateFacade;
     private final NumberGeneratorValidator numberGeneratorValidator;
     private final NumberGeneratorRepository numbersRepository;
@@ -24,7 +24,8 @@ public class NumberGeneratorFacade {
         if (!getWinningNumbersByDrawDate(drawDate.date()).winningNumbers().isEmpty()) {
             throw new WinningNumbersAlreadyGenerated("Numbers were already generated for this week!");
         }
-        Set<Integer> generatedNumbers = numberGenerator.generateWinningNumbers();
+        SixRandomGeneratedNumbers sixNumbersDto = numberGenerator.generateWinningNumbers();
+        Set<Integer> generatedNumbers = sixNumbersDto.numbers();
         numberGeneratorValidator.validateWinningNumbers(generatedNumbers);
         WinningNumbers winningNumbers = WinningNumbers.builder()
                 .generatedWinningNumbers(generatedNumbers)
