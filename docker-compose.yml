@@ -16,7 +16,7 @@ services:
     ports:
       - "8081:8081"
     environment:
-      ME_CONFING_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
       ME_CONFIG_MONGODB_ADMINPASSWORD: example
       ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/ #mongodb://{mongo-image-username}:{mongo-image-passoword}@{mongo-image-name}:{mongo-ports}
       ME_CONFIG_BASICAUTH_USERNAME: express
