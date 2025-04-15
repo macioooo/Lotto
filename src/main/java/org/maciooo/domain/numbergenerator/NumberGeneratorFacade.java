@@ -4,6 +4,7 @@ package org.maciooo.domain.numbergenerator;
 import lombok.AllArgsConstructor;
 import org.maciooo.domain.drawdate.DrawDateFacade;
 import org.maciooo.domain.drawdate.dto.DrawDateDto;
+import org.maciooo.domain.numbergenerator.dto.SixRandomGeneratedNumbersDto;
 import org.maciooo.domain.numbergenerator.dto.WinningNumbersDto;
 
 import java.util.Collections;
@@ -24,7 +25,7 @@ public class NumberGeneratorFacade {
         if (!getWinningNumbersByDrawDate(drawDate.date()).winningNumbers().isEmpty()) {
             throw new WinningNumbersAlreadyGenerated("Numbers were already generated for this week!");
         }
-        SixRandomGeneratedNumbers sixNumbersDto = numberGenerator.generateWinningNumbers();
+        SixRandomGeneratedNumbersDto sixNumbersDto = numberGenerator.generateWinningNumbers();
         Set<Integer> generatedNumbers = sixNumbersDto.numbers();
         numberGeneratorValidator.validateWinningNumbers(generatedNumbers);
         WinningNumbers winningNumbers = WinningNumbers.builder()

@@ -1,5 +1,7 @@
 package org.maciooo.domain.numbergenerator;
 
+import org.maciooo.domain.numbergenerator.dto.SixRandomGeneratedNumbersDto;
+
 import java.util.Set;
 
 class RandomNumberGeneratorTestImpl implements RandomNumberGenerable {
@@ -14,8 +16,8 @@ class RandomNumberGeneratorTestImpl implements RandomNumberGenerable {
     }
 
     @Override
-    public SixRandomGeneratedNumbers generateWinningNumbers() {
-        return SixRandomGeneratedNumbers.builder()
+    public SixRandomGeneratedNumbersDto generateWinningNumbers() {
+        return SixRandomGeneratedNumbersDto.builder()
                 .numbers(this.generatedNumbers)
                 .build();
     }
