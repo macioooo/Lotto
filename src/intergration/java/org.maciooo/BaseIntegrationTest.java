@@ -45,11 +45,8 @@ public class BaseIntegrationTest {
     public static void propertyOverride(DynamicPropertyRegistry registry) {
         //setting db address to container
         registry.add("spring.data.mongodb.uri",mongoDBContainer::getReplicaSetUrl);
-
-    }
-
-    @Test
-    public void f() {
+        registry.add("${lotto.number-generator.http.client.config.port}", () -> wireMockServer.getPort());
+        registry.add("${lotto.number-generator.http.client.config.uri}", () -> WIRE_MOCK_HOST);
 
     }
 }
