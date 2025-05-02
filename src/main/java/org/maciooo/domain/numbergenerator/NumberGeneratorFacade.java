@@ -18,6 +18,7 @@ public class NumberGeneratorFacade {
     private final DrawDateFacade drawDateFacade;
     private final NumberGeneratorValidator numberGeneratorValidator;
     private final NumberGeneratorRepository numbersRepository;
+    private final NumberGeneratorFacadeConfigProperties properties;
 
     public WinningNumbersDto generateWinningNumbers() {
         DrawDateDto drawDateDto = drawDateFacade.getNextDrawDate();
@@ -25,7 +26,7 @@ public class NumberGeneratorFacade {
         if (!getWinningNumbersByDrawDate(drawDate.date()).winningNumbers().isEmpty()) {
             throw new WinningNumbersAlreadyGenerated("Numbers were already generated for this week!");
         }
-        SixRandomGeneratedNumbersDto sixNumbersDto = numberGenerator.generateWinningNumbers();
+        SixRandomGeneratedNumbersDto sixNumbersDto = numberGenerator.generateWinningNumbers(properties.count(), properties.lowerBand(), properties.upperBand());
         Set<Integer> generatedNumbers = sixNumbersDto.numbers();
         numberGeneratorValidator.validateWinningNumbers(generatedNumbers);
         WinningNumbers winningNumbers = WinningNumbers.builder()

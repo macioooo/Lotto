@@ -1,14 +1,54 @@
 package org.maciooo.domain.numbergenerator;
 
 import org.maciooo.domain.drawdate.DrawDateFacade;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.util.List;
 
+@Configuration
 class NumberGeneratorConfiguration {
-    NumberGeneratorFacade createFacadeForTests(RandomNumberGenerable numberGenerator, Clock clock , NumberGeneratorRepository numberGeneratorRepository) {
+
+    @Bean
+    NumberGeneratorRepository repository() {
+        return new NumberGeneratorRepository() {
+            @Override
+            public WinningNumbers save(WinningNumbers winningNumbers) {
+                return null;
+            }
+
+            @Override
+            public List<WinningNumbers> findAllWinningNumbers() {
+                return null;
+            }
+
+            @Override
+            public WinningNumbers findWinningNumbersByDrawDate(String drawDate) {
+                return null;
+            }
+        };
+    }
+    @Bean
+    Clock clock() {
+        return Clock.systemDefaultZone();
+    }
+    @Bean
+    NumberGeneratorFacade numberGeneratorFacade(NumberGeneratorRepository numberGeneratorRepository, NumberGeneratorFacadeConfigProperties properties, RandomNumberGenerable randomNumberGenerator, Clock clock) {
         DrawDateFacade drawDateFacade = new DrawDateFacade(clock);
-        NumberGeneratorValidator numberGeneratorValidator = new NumberGeneratorValidator();
-        return new NumberGeneratorFacade(numberGenerator, drawDateFacade, numberGeneratorValidator, numberGeneratorRepository);
+        NumberGeneratorValidator validator = new NumberGeneratorValidator();
+        return new NumberGeneratorFacade(randomNumberGenerator, drawDateFacade, validator, numberGeneratorRepository, properties);
+    }
+
+    NumberGeneratorFacade createFacadeForTests(RandomNumberGenerable numberGenerator, Clock clock, NumberGeneratorRepository numberGeneratorRepository) {
+        NumberGeneratorFacadeConfigProperties properties = NumberGeneratorFacadeConfigProperties.builder()
+                .count(6)
+                .lowerBand(1)
+                .upperBand(99)
+                .build();
+        return numberGeneratorFacade(numberGeneratorRepository, properties, numberGenerator, clock);
     }
 
 }
