@@ -5,15 +5,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.time.Clock;
-import java.time.Instant;
-import java.time.ZoneId;
 import java.util.List;
 
 @Configuration
 class NumberGeneratorConfiguration {
 
     @Bean
-    NumberGeneratorRepository repository() {
+    NumberGeneratorRepository numberGeneratorRepository() {
         return new NumberGeneratorRepository() {
             @Override
             public WinningNumbers save(WinningNumbers winningNumbers) {
@@ -31,10 +29,7 @@ class NumberGeneratorConfiguration {
             }
         };
     }
-    @Bean
-    Clock clock() {
-        return Clock.systemDefaultZone();
-    }
+
     @Bean
     NumberGeneratorFacade numberGeneratorFacade(NumberGeneratorRepository numberGeneratorRepository, NumberGeneratorFacadeConfigProperties properties, RandomNumberGenerable randomNumberGenerator, Clock clock) {
         DrawDateFacade drawDateFacade = new DrawDateFacade(clock);

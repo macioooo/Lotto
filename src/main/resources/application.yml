@@ -4,6 +4,7 @@ spring:
       uri: mongodb://admin:admin@localhost:27017/lotto-web
 lotto:
   number-generator:
+    lotteryRunOccurrence: "0 0 12 * * 6"
     facade:
       count: 6
       lowerBand: 1
@@ -13,3 +14,5 @@ lotto:
         config:
           port: 80
           uri: http://www.randomnumberapi.com
+          connectionTimeout: 5000
+          readTimeout: 5000
