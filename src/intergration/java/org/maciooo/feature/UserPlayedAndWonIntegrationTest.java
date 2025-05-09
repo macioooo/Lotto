@@ -31,12 +31,12 @@ public class UserPlayedAndWonIntegrationTest extends BaseIntegrationTest {
                         .withBody("[1,2,3,4,5,6]")
                 ));
         // step 2: system fetched winning numbers for draw date 10.05.2025
-        String drawDate = LocalDateTime.of(2025, 05, 10, 12, 0, 0).toString();
+        String drawDate = LocalDateTime.of(2025, 5, 10, 12, 0, 0).toString();
         await()
                 .atMost(Duration.ofSeconds(20))
                 .pollInterval(Duration.ofSeconds(1))
                 .until(
-                        ()->!facade.getWinningNumbersByDrawDate(drawDate).winningNumbers().isEmpty()
+                        () -> !facade.getWinningNumbersByDrawDate(drawDate).winningNumbers().isEmpty()
                 );
     }
 }

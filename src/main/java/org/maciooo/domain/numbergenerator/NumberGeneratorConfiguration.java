@@ -10,25 +10,6 @@ import java.util.List;
 @Configuration
 class NumberGeneratorConfiguration {
 
-    @Bean
-    NumberGeneratorRepository numberGeneratorRepository() {
-        return new NumberGeneratorRepository() {
-            @Override
-            public WinningNumbers save(WinningNumbers winningNumbers) {
-                return null;
-            }
-
-            @Override
-            public List<WinningNumbers> findAllWinningNumbers() {
-                return null;
-            }
-
-            @Override
-            public WinningNumbers findWinningNumbersByDrawDate(String drawDate) {
-                return null;
-            }
-        };
-    }
 
     @Bean
     NumberGeneratorFacade numberGeneratorFacade(NumberGeneratorRepository numberGeneratorRepository, NumberGeneratorFacadeConfigProperties properties, RandomNumberGenerable randomNumberGenerator, Clock clock) {
