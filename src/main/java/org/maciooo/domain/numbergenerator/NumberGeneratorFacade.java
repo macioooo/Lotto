@@ -29,16 +29,16 @@ public class NumberGeneratorFacade {
         SixRandomGeneratedNumbersDto sixNumbersDto = numberGenerator.generateWinningNumbers(properties.count(), properties.lowerBand(), properties.upperBand());
         Set<Integer> generatedNumbers = sixNumbersDto.numbers();
         numberGeneratorValidator.validateWinningNumbers(generatedNumbers);
-        WinningNumbers winningNumbers = WinningNumbers.builder()
+        WinningNumbers winningNumbersDocument = WinningNumbers.builder()
                 .generatedWinningNumbers(generatedNumbers)
                 .drawDate(drawDate.date())
                 .build();
-        numbersRepository.save(winningNumbers);
-        return WinningNumbersMapper.mapFromWinningNumbersToDto(winningNumbers);
+        WinningNumbers savedNumbers = numbersRepository.save(winningNumbersDocument);
+        return WinningNumbersMapper.mapFromWinningNumbersToDto(savedNumbers);
     }
 
     public List<WinningNumbersDto> getAllWinningNumbers() {
-        return numbersRepository.findAllWinningNumbers()
+        return numbersRepository.findAll()
                 .stream()
                 .map(WinningNumbersMapper::mapFromWinningNumbersToDto)
                 .toList();

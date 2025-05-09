@@ -1,10 +1,12 @@
 package org.maciooo.domain.numbergenerator;
 
-import java.util.List;
+import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.stereotype.Repository;
 
-interface NumberGeneratorRepository {
-    WinningNumbers save(WinningNumbers winningNumbers);
 
-    List<WinningNumbers> findAllWinningNumbers();
+
+@Repository
+interface NumberGeneratorRepository extends MongoRepository<WinningNumbers, String> {
+
     WinningNumbers findWinningNumbersByDrawDate(String drawDate);
 }
