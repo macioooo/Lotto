@@ -3,7 +3,6 @@ package org.maciooo;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -19,7 +18,7 @@ import org.testcontainers.utility.DockerImageName;
 
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 
-@SpringBootTest(classes = LottoSpringBootApplication.class)
+@SpringBootTest(classes = {LottoSpringBootApplication.class, IntegrationConfiguration.class})
 @ActiveProfiles("integration") //reading the file application-integration.yml
 @AutoConfigureMockMvc //throwing http requests
 @Testcontainers //starting db just for tests

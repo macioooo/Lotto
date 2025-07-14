@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.maciooo.BaseIntegrationTest;
 import org.maciooo.domain.numbergenerator.NumberGeneratorFacade;
 import org.maciooo.domain.numbergenerator.RandomNumberGenerable;
+import org.maciooo.domain.numbergenerator.WinningNumbersNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
@@ -35,8 +36,13 @@ public class UserPlayedAndWonIntegrationTest extends BaseIntegrationTest {
         await()
                 .atMost(Duration.ofSeconds(20))
                 .pollInterval(Duration.ofSeconds(1))
-                .until(
-                        () -> !facade.getWinningNumbersByDrawDate(drawDate).winningNumbers().isEmpty()
+                .until(() -> {
+                            try {
+                                return !facade.getWinningNumbersByDrawDate(drawDate).winningNumbers().isEmpty();
+                            } catch (WinningNumbersNotFoundException exception) {
+                                return false;
+                            }
+                        }
                 );
     }
 }
