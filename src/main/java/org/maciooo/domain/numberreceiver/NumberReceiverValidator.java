@@ -11,9 +11,10 @@ class NumberReceiverValidator {
     private static final int MAX_NUMBER_FROM_USER = 99;
     private static final int AMOUNT_OF_NUMBERS = 6;
 
-    List<NumberReceiverValidationMessages> messages = new LinkedList<>();
+    List<NumberReceiverValidationMessages> messages;
 
     List<NumberReceiverValidationMessages> validate(Set<Integer> numbersGivenByUser) {
+        messages = new LinkedList<>();
         if (!amountOfNumbersEqualsSix(numbersGivenByUser)) {
             messages.add(NumberReceiverValidationMessages.LESS_OR_MORE_THAN_6_NUMBERS_GIVEN);
         }

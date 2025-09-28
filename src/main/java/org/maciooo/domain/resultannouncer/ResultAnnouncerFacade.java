@@ -26,7 +26,7 @@ public class ResultAnnouncerFacade {
                     .build();
         }
 
-        if (repository.existById(ticketId)) {
+        if (repository.existsByTicketId(ticketId)) {
             if (validator.hasCooldown(ticketId, clock)) {
                 return ResultAnnouncerResponseDto.builder()
                         .message(COOLDOWN_MESSAGE.message)
