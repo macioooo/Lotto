@@ -5,12 +5,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.time.Clock;
-import java.util.List;
 
 @Configuration
 class NumberGeneratorConfiguration {
-
-
     @Bean
     NumberGeneratorFacade numberGeneratorFacade(NumberGeneratorRepository numberGeneratorRepository, NumberGeneratorFacadeConfigProperties properties, RandomNumberGenerable randomNumberGenerator, Clock clock) {
         DrawDateFacade drawDateFacade = new DrawDateFacade(clock);

@@ -1,9 +1,14 @@
 package org.maciooo.domain.resultannouncer;
 
-interface ResultAnnouncerRepository {
+import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+interface ResultAnnouncerRepository extends MongoRepository<ResultResponse, String> {
     ResultResponse findByTicketId(String ticketId);
 
     ResultResponse save(ResultResponse result);
 
-    boolean existById(String ticketId);
+    boolean existsByTicketId(String ticketId);
+
 }
