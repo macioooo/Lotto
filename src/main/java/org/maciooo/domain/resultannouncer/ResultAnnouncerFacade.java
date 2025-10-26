@@ -20,13 +20,15 @@ public class ResultAnnouncerFacade {
     private final ResultAnnouncerValidator validator;
 
     public ResultAnnouncerResponseDto announceResult(String ticketId) {
-        if (validator.isBeforeGeneneratingResults(clock)) {
+        final boolean ticketExist = repository.existsByTicketId(ticketId);
+
+        if (ticketExist && validator.isBeforeGeneneratingResults(clock)) {
             return ResultAnnouncerResponseDto.builder()
                     .message(WAIT_FOR_RESULTS_MESSAGE.message)
                     .build();
         }
 
-        if (repository.existsByTicketId(ticketId)) {
+        if (ticketExist) {
             if (validator.hasCooldown(ticketId, clock)) {
                 return ResultAnnouncerResponseDto.builder()
                         .message(COOLDOWN_MESSAGE.message)
@@ -42,6 +44,7 @@ public class ResultAnnouncerFacade {
         PlayerDto playerDto = checkerFacade.findPlayerByTicketId(ticketId);
         if (playerDto == null) {
             return ResultAnnouncerResponseDto.builder()
+                    .responseDto(null)
                     .message(COULDNT_FIND_TICKET_MESSAGE.message)
                     .build();
         }
