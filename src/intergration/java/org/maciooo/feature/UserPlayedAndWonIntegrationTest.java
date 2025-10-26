@@ -85,7 +85,7 @@ public class UserPlayedAndWonIntegrationTest extends BaseIntegrationTest {
         performGetWithNonExistingId.andExpect(status().isNotFound())
                 .andExpect(content().json("""
                         {
-                            "message": "Not found for id: nonExistingId",
+                            "message": "Sorry, we couldn't find the ticket with ID: nonExistingId. Check if it's correct and try again",
                             "status": "NOT_FOUND"
                         }
                         """.trim()

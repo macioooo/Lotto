@@ -35,15 +35,14 @@ public class ResultCheckerFacade {
     }
 
     public PlayerDto findPlayerByTicketId(String ticketId) {
-        Player player = playerRepository.findPlayerByTicketId(ticketId)
-                .orElseThrow(() -> new PlayerNotFound("Player not found."));
-        return PlayerDto.builder()
+        return playerRepository.findPlayerByTicketId(ticketId).map(player -> PlayerDto.builder()
                 .playerNumbers(player.playerNumbers())
                 .guessedNumbers(player.guessedNumbers())
                 .drawDate(player.drawDate())
                 .isWinner(player.isWinner())
                 .ticketId(player.ticketId())
-                .build();
+                .build())
+                .orElseThrow(() -> new PlayerNotFoundException("Sorry, we couldn't find the ticket with ID: " + ticketId + ". Check if it's correct and try again"));
     }
 
 
